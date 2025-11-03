@@ -106,10 +106,16 @@ PORT=5000
 
 #### D-ID API Key
 1. Visit [D-ID Platform](https://www.d-id.com/)
-2. Sign up or log in
-3. Navigate to API settings
-4. Generate an API key
-5. Copy the key to your `.env` file
+2. Sign up or log in to your account
+3. Navigate to your account settings or [API page](https://studio.d-id.com/account-settings)
+4. Generate an API key (you may need to add credits to your account)
+5. Copy the API key to your `.env` file
+
+**Important Notes:**
+- D-ID API is a paid service with free trial credits
+- Each video generation consumes credits based on video duration
+- Check [D-ID documentation](https://docs.d-id.com/) for latest API details
+- API key should be kept secure and not committed to version control
 
 ### 5. Run the Application
 
