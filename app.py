@@ -51,11 +51,13 @@ conversation_sessions = {}
 def get_did_headers():
     """
     Get properly formatted headers for D-ID API
-    D-ID API uses either:
-    1. Simple API key header: x-api-key
+    
+    D-ID API supports two authentication methods:
+    1. API key header: x-api-key (RECOMMENDED - used here)
     2. Basic auth: Authorization: Basic base64(api_key:)
     
-    Using x-api-key method as it's simpler and recommended
+    This application uses the x-api-key method as it's simpler and
+    is the recommended approach per D-ID's official documentation.
     """
     return {
         "accept": "application/json",

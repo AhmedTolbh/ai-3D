@@ -206,17 +206,35 @@ Receptionist: [Responds in Finnish]
 
 ```
 ai-3D/
-├── app.py                 # Flask backend server
-├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variables template
-├── .gitignore            # Git ignore rules
-├── README.md             # This file
-└── static/               # Frontend files
-    ├── index.html        # Main HTML page
-    ├── app.js            # Frontend JavaScript
-    ├── audio/            # Audio files (generated)
-    └── video/            # Video files (generated)
+├── app.py                     # Flask backend server
+├── requirements.txt           # Python dependencies
+├── .env.example              # Environment variables template
+├── .gitignore                # Git ignore rules
+├── README.md                 # Main documentation (this file)
+├── API_DOCUMENTATION.md      # API reference guide
+├── ARCHITECTURE.md           # System architecture
+├── DID_API_GUIDE.md          # D-ID API integration guide
+├── QUICKSTART.md             # Quick start summary
+├── TROUBLESHOOTING.md        # Problem solving guide
+├── CONTRIBUTING.md           # Contribution guidelines
+├── DEMO_GUIDE.md             # Hackathon presentation guide
+└── static/                   # Frontend files
+    ├── index.html            # Main HTML page
+    ├── app.js                # Frontend JavaScript
+    ├── audio/                # Audio files (generated)
+    └── video/                # Video files (generated)
 ```
+
+## 📚 Documentation
+
+- **[README.md](README.md)** - Main documentation and setup guide (you are here)
+- **[DID_API_GUIDE.md](DID_API_GUIDE.md)** - Complete D-ID API integration guide
+- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Backend API reference
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and design
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick start summary
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions
+- **[DEMO_GUIDE.md](DEMO_GUIDE.md)** - Hackathon demo presentation guide
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
 
 ## 🚢 Deployment
 
