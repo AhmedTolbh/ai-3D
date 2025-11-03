@@ -312,6 +312,63 @@ Speech recognition automatically detects the language from the configured altern
 
 ## Video Generation
 
+### D-ID API Integration
+
+The application uses [D-ID's Talks API](https://docs.d-id.com/) to generate realistic talking avatar videos.
+
+#### Authentication
+
+D-ID API uses API key authentication via the `x-api-key` header:
+
+```python
+headers = {
+    "accept": "application/json",
+    "content-type": "application/json",
+    "x-api-key": "YOUR_DID_API_KEY"
+}
+```
+
+#### API Endpoints
+
+**Create Talk:**
+- Endpoint: `POST https://api.d-id.com/talks`
+- Creates a new talking avatar video from audio
+
+**Get Talk Status:**
+- Endpoint: `GET https://api.d-id.com/talks/{talk_id}`
+- Retrieves the status and result of a talk
+
+#### Request Format
+
+```json
+{
+  "script": {
+    "type": "audio",
+    "audio_url": "data:audio/mp3;base64,{base64_audio}"
+  },
+  "config": {
+    "fluent": true,
+    "pad_audio": 0.0
+  },
+  "source_url": "https://create-images-results.d-id.com/default-presenter-image.png"
+}
+```
+
+#### Response Statuses
+
+- `created` - Talk has been created and is queued
+- `started` - Processing has begun
+- `done` - Video is ready (includes `result_url`)
+- `error` - Generation failed
+
+#### Important Notes
+
+1. **Audio Format**: D-ID accepts base64-encoded audio in data URI format
+2. **Polling**: Video generation is asynchronous - poll the status endpoint
+3. **Credits**: Each video generation consumes D-ID credits
+4. **Source URL**: Can be any publicly accessible image URL
+5. **Video Duration**: Automatically matches the audio length
+
 ### Avatar Configuration
 
 Default avatar image URL:
@@ -319,7 +376,11 @@ Default avatar image URL:
 https://create-images-results.d-id.com/default-presenter-image.png
 ```
 
-To use a custom avatar, modify the `source_url` in the backend.
+To use a custom avatar, modify the `source_url` in the backend:
+- Image should be a clear portrait photo
+- Recommended: 512x512 pixels or larger
+- Format: PNG or JPG
+- Must be publicly accessible via HTTPS
 
 ### Video Specifications
 - Format: MP4

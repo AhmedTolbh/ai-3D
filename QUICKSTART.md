@@ -35,7 +35,11 @@ You need 3 API keys:
 3. **D-ID API Key**
    - Visit: https://www.d-id.com/
    - Sign up/Login
-   - Get API key from dashboard
+   - Navigate to [Account Settings](https://studio.d-id.com/account-settings)
+   - Generate API key (may need to add credits first)
+   - Copy the API key (keep it secure!)
+   - **Note:** D-ID is a paid service with free trial credits
+   - See: https://docs.d-id.com/ for official documentation
 
 ### Step 2: Configure
 

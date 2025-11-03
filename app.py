@@ -47,6 +47,24 @@ tts_client = texttospeech.TextToSpeechClient()
 # In production, use Redis or a database
 conversation_sessions = {}
 
+
+def get_did_headers():
+    """
+    Get properly formatted headers for D-ID API
+    
+    D-ID API supports two authentication methods:
+    1. API key header: x-api-key (RECOMMENDED - used here)
+    2. Basic auth: Authorization: Basic base64(api_key:)
+    
+    This application uses the x-api-key method as it's simpler and
+    is the recommended approach per D-ID's official documentation.
+    """
+    return {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "x-api-key": DID_API_KEY
+    }
+
 # Configure Gemini model
 generation_config = {
     "temperature": 0.7,
@@ -280,11 +298,7 @@ def create_avatar_video():
             "source_url": "https://create-images-results.d-id.com/default-presenter-image.png"
         }
         
-        headers = {
-            "accept": "application/json",
-            "content-type": "application/json",
-            "authorization": f"Basic {DID_API_KEY}"
-        }
+        headers = get_did_headers()
         
         # Create the talk
         response = requests.post(url, json=payload, headers=headers)
@@ -346,10 +360,7 @@ def check_video_status(talk_id):
     """
     try:
         url = f"https://api.d-id.com/talks/{talk_id}"
-        headers = {
-            "accept": "application/json",
-            "authorization": f"Basic {DID_API_KEY}"
-        }
+        headers = get_did_headers()
         
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -468,11 +479,7 @@ def complete_flow():
             "source_url": "https://create-images-results.d-id.com/default-presenter-image.png"
         }
         
-        headers = {
-            "accept": "application/json",
-            "content-type": "application/json",
-            "authorization": f"Basic {DID_API_KEY}"
-        }
+        headers = get_did_headers()
         
         did_response = requests.post(url, json=payload, headers=headers)
         did_response.raise_for_status()

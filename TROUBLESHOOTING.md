@@ -109,14 +109,24 @@ print("Credentials working!")
 **Problem:** `401 Unauthorized` or `Invalid API key`
 
 **Solutions:**
-1. Verify API key format (should be base64)
-2. Check D-ID account credits
-3. Ensure proper authorization header format:
+1. Verify API key is correct in `.env` file
+2. Check D-ID account credits at [D-ID Studio](https://studio.d-id.com/account-settings)
+3. Ensure you're using the correct API key (not the Basic Auth token)
+4. The application uses `x-api-key` header authentication:
    ```python
    headers = {
-       "authorization": f"Basic {DID_API_KEY}"
+       "x-api-key": "YOUR_DID_API_KEY"
    }
    ```
+5. Verify API key in test:
+   ```python
+   import requests
+   headers = {"x-api-key": "your_key"}
+   response = requests.get("https://api.d-id.com/talks", headers=headers)
+   print(response.status_code)  # Should be 200
+   ```
+6. Check [D-ID API Status](https://status.d-id.com/) for service outages
+7. Review [D-ID Documentation](https://docs.d-id.com/) for latest API changes
 
 ---
 
@@ -362,10 +372,12 @@ Keep responses very concise (1-2 sentences maximum).
 **Problem:** `Payment required` or `Quota exceeded`
 
 **Solutions:**
-1. Check D-ID dashboard for credit balance
-2. Purchase more credits
-3. Implement fallback to audio-only mode
-4. Cache generated videos for repeated responses
+1. Check D-ID dashboard for credit balance at [D-ID Studio](https://studio.d-id.com/account-settings)
+2. Purchase more credits or upgrade plan at [D-ID Pricing](https://www.d-id.com/pricing/)
+3. Monitor credit usage - each video consumes credits based on duration
+4. Implement fallback to audio-only mode when credits are low
+5. Cache generated videos for repeated responses to save credits
+6. Consider using shorter responses to reduce video generation costs
 
 ---
 

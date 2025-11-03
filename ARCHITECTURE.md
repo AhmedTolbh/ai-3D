@@ -217,7 +217,93 @@ Cloud Platform (Vercel/Railway/AWS)
 │  • Varies by plan                           │
 │  • Credit-based system                      │
 │  • Video generation: ~30-60 seconds         │
+│  • Authentication: x-api-key header         │
+│  • Endpoint: https://api.d-id.com/talks     │
 └─────────────────────────────────────────────┘
+```
+
+## D-ID API Integration Details
+
+### Authentication Method
+
+The application uses D-ID's recommended authentication approach:
+
+```python
+def get_did_headers():
+    """Get properly formatted headers for D-ID API"""
+    return {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "x-api-key": DID_API_KEY
+    }
+```
+
+### Video Generation Flow
+
+```
+1. Convert Text to Speech (MP3)
+   │
+   ▼
+2. Encode Audio as Base64
+   │
+   ▼
+3. Create D-ID Talk Request
+   POST https://api.d-id.com/talks
+   {
+     "script": {
+       "type": "audio",
+       "audio_url": "data:audio/mp3;base64,{audio}"
+     },
+     "config": {
+       "fluent": true,
+       "pad_audio": 0.0
+     },
+     "source_url": "{avatar_image_url}"
+   }
+   │
+   ▼
+4. Receive Talk ID
+   {
+     "id": "tlk_xxxxx",
+     "status": "created"
+   }
+   │
+   ▼
+5. Poll for Completion (Every 2 seconds)
+   GET https://api.d-id.com/talks/{talk_id}
+   │
+   ├─ Status: "created" ──▶ Continue polling
+   ├─ Status: "started" ──▶ Continue polling  
+   ├─ Status: "done" ────▶ Video ready!
+   └─ Status: "error" ───▶ Handle error
+   │
+   ▼
+6. Retrieve Video URL
+   {
+     "status": "done",
+     "result_url": "https://..."
+   }
+```
+
+### D-ID API Response Statuses
+
+| Status | Description | Action |
+|--------|-------------|--------|
+| `created` | Talk queued for processing | Continue polling |
+| `started` | Video generation in progress | Continue polling |
+| `done` | Video ready | Fetch video URL |
+| `error` | Generation failed | Show error to user |
+
+### Credits and Pricing
+
+- D-ID uses a credit-based pricing model
+- Each video generation consumes credits based on:
+  - Video duration
+  - Resolution
+  - Number of requests
+- Free trial credits available for new accounts
+- Check [D-ID Pricing](https://www.d-id.com/pricing/) for current rates
+
 ```
 
 ## Performance Optimization
