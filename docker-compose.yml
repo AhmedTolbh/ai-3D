@@ -1,0 +1,29 @@
+# Docker Compose for Virtual Receptionist Avatar
+# ===============================================
+
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/google-cloud-credentials.json
+      - DID_API_KEY=${DID_API_KEY}
+      - FLASK_ENV=production
+      - PORT=5000
+    volumes:
+      # Mount credentials file
+      - ./google-cloud-credentials.json:/app/credentials/google-cloud-credentials.json:ro
+      # Persist generated files (optional)
+      - ./static/audio:/app/static/audio
+      - ./static/video:/app/static/video
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

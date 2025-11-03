@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Receptionist Avatar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .video-container {
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #avatarVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder {
+            color: #888;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .placeholder-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #ee3344;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .recording-indicator {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border: 2px solid #ffc107;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background: #dc3545;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0.7;
+            }
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .conversation-log {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+
+        .conversation-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .user-message {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+
+        .assistant-message {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .message-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .info-panel h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .info-panel ul {
+            list-style-position: inside;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Virtual Receptionist</h1>
+        <p class="subtitle">AI-Powered Avatar Assistant</p>
+
+        <!-- Video Display Area -->
+        <div class="video-container" id="videoContainer">
+            <div class="placeholder" id="placeholder">
+                <div class="placeholder-icon">👋</div>
+                <div>Press "Talk to Receptionist" to start</div>
+            </div>
+            <video id="avatarVideo" style="display: none;" controls autoplay></video>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px;">Processing your request...</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <!-- Recording Indicator -->
+            <div class="recording-indicator" id="recordingIndicator">
+                <div class="pulse"></div>
+                <span>Recording... Speak now!</span>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button id="talkBtn" class="btn-primary" onclick="startRecording()">
+                    🎤 Talk to Receptionist
+                </button>
+                <button id="stopBtn" class="btn-danger" onclick="stopRecording()" disabled style="display: none;">
+                    ⏹ Stop Recording
+                </button>
+                <button id="resetBtn" class="btn-secondary" onclick="resetConversation()">
+                    🔄 New Conversation
+                </button>
+            </div>
+
+            <!-- Status Messages -->
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <!-- Conversation Log -->
+        <div class="conversation-log" id="conversationLog" style="display: none;">
+            <h3 style="margin-bottom: 15px;">Conversation History</h3>
+            <div id="conversationItems"></div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <h3>How to Use:</h3>
+            <ul>
+                <li>Click "Talk to Receptionist" and allow microphone access</li>
+                <li>Speak your question clearly</li>
+                <li>Click "Stop Recording" when you're done</li>
+                <li>Wait for the avatar to respond with voice and video</li>
+                <li>Continue the conversation or start a new one</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
